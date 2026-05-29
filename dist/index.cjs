@@ -485,11 +485,5 @@ function toSvg(text, options = {}) {
 
 export default toSvg;
 
-// CommonJS compat
-if (typeof module !== 'undefined') {
-  module.exports = { toSvg };
-  module.exports.default = toSvg;
-}
-
 module.exports = { toSvg };
 module.exports.default = toSvg;

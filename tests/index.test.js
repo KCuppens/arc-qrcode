@@ -84,3 +84,34 @@ test('path uses run-length horizontal encoding format', () => {
   // RLE path segments look like: M5,4h3v1h-3z
   assert.match(svg, /d="M\d+,\d+h\d+v1h-\d+z/);
 });
+
+test('number input is coerced to string', () => {
+  const svg = toSvg(12345);
+  assert.ok(svg.startsWith('<svg'));
+  assert.ok(svg.includes('<path'));
+});
+
+test('invalid level string falls back to M', () => {
+  const svgM = toSvg('test', { level: 'M' });
+  const svgX = toSvg('test', { level: 'X' });
+  assert.strictEqual(svgM, svgX);
+});
+
+test('XSS in dark color is stripped from SVG output', () => {
+  const svg = toSvg('test', { dark: '"><script>xss</script>' });
+  assert.ok(!svg.includes('<script>'), 'script tag should be stripped');
+  assert.ok(!svg.includes('</script>'), 'closing script tag should be stripped');
+  // Exactly one well-formed SVG root tag — no injected tags
+  assert.strictEqual((svg.match(/</g) || []).length, (svg.match(/>/g) || []).length);
+});
+
+test('rgb() color passes through sanitizer', () => {
+  const svg = toSvg('test', { dark: 'rgb(255, 0, 0)' });
+  assert.ok(svg.includes('rgb(255, 0, 0)'), 'rgb() color should be preserved');
+});
+
+test('same input always produces identical SVG', () => {
+  const a = toSvg('https://arc.codes', { level: 'M' });
+  const b = toSvg('https://arc.codes', { level: 'M' });
+  assert.strictEqual(a, b, 'output should be deterministic');
+});

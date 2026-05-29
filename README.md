@@ -1,5 +1,9 @@
 # @arc-lang/qrcode
 
+[![npm](https://img.shields.io/npm/v/@arc-lang/qrcode)](https://www.npmjs.com/package/@arc-lang/qrcode)
+[![license](https://img.shields.io/npm/l/@arc-lang/qrcode)](./LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/KCuppens/arc-qrcode/release.yml)](https://github.com/KCuppens/arc-qrcode/actions)
+
 Zero-dependency QR code generator. Produces inline SVG with a **single `<path>` element** using horizontal run-length encoding. ISO 18004 byte-mode, versions 1–40. Works in Node.js, browsers, and Arc.
 
 ## Install
@@ -36,6 +40,16 @@ const svg = toSvg('Hello, world!', { size: 300, level: 'H' });
 </script>
 ```
 
+### TypeScript
+
+```ts
+import { toSvg, type QRCodeOptions } from '@arc-lang/qrcode';
+
+const opts: QRCodeOptions = { size: 256, level: 'H', dark: '#1a1a2e' };
+const svg: string = toSvg('https://arc.codes', opts);
+document.getElementById('qr')!.innerHTML = svg;
+```
+
 ### Arc
 
 ```arc
@@ -69,6 +83,17 @@ Returns an SVG string on success, or an empty string `""` if:
 - `M` — 15% data recovery (default)
 - `Q` — 25% data recovery
 - `H` — 30% data recovery
+
+## Why @arc-lang/qrcode?
+
+| | @arc-lang/qrcode | qrcode | qr-image |
+|---|---|---|---|
+| Output | SVG (single `<path>`) | Canvas / SVG / PNG | PNG / SVG |
+| Dependencies | **0** | 0 | 0 |
+| Bundle size | ~7 KB | ~40 KB | ~30 KB |
+| TypeScript | ✓ | ✓ | ✗ |
+| SSR / Node.js | ✓ | ✓ | ✓ |
+| DOM-free | ✓ | ✗ | ✗ |
 
 ## Performance
 
